@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "executor.h"
 #include "builtins.h"
+#include "pipe.h"
 
 #define MAX_INPUT 1024
 
@@ -30,22 +31,26 @@ int main() {
             break; // End of input (Ctrl+D)
         }
 
-        // Check for empty input
         if (input[0] == '\n') {
             continue;
         }
 
         input[strcspn(input, "\n")] = 0; // Remove trailing newline
 
-        args = parse_input(input);
+        // Check for pipe character
+        if (strchr(input, '|')) {
+            handle_pipe(input);
+        } else {
+            args = parse_input(input);
 
-        // Check for built-in commands first
-        if (!handle_builtin_command(args)) {
-            // If not a built-in, execute as external command
-            execute_command(args);
+            // Check for built-in commands first
+            if (!handle_builtin_command(args)) {
+                // If not a built-in, execute as external command
+                execute_command(args);
+            }
+
+            free(args);
         }
-
-        free(args);
     }
 
     printf("Exiting shell.\n");

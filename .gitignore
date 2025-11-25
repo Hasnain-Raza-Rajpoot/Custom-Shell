@@ -2,3 +2,5 @@
 *.o
 myshell
 *.txt
+*.py
+*.cpp
