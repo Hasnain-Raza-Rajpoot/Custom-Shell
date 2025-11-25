@@ -2,14 +2,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <sys/wait.h>
+#include "parser.h"
+#include "executor.h"
 
 #define MAX_INPUT 1024
 
 void display_prompt() {
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("myshell:%s$ ", cwd);
+        printf("\nmyshell:%s$ ", cwd);
     } else {
         perror("getcwd");
         printf("myshell$ ");
@@ -18,42 +19,32 @@ void display_prompt() {
 
 int main() {
     char input[MAX_INPUT];
-    char *args[2]; 
-    pid_t pid;
+    char** args;
 
     while (1) {
         display_prompt();
 
         if (fgets(input, sizeof(input), stdin) == NULL) {
-            break; // End of input
+            printf("\n");
+            break; // End of input (Ctrl+D)
         }
 
-        // Remove trailing newline
-        input[strcspn(input, "\n")] = 0;
+        // Check for empty input
+        if (input[0] == '\n') {
+            continue;
+        }
+
+        input[strcspn(input, "\n")] = 0; // Remove trailing newline
 
         // Check for exit command
         if (strcmp(input, "exit") == 0) {
             break;
         }
 
-        // Simple parsing for a single command without arguments
-        args[0] = input;
-        args[1] = NULL;
+        args = parse_input(input);
+        execute_command(args);
 
-        pid = fork();
-
-        if (pid < 0) {
-            perror("fork");
-        } else if (pid == 0) {
-            // Child process
-            if (execvp(args[0], args) == -1) {
-                perror(args[0]);
-                exit(EXIT_FAILURE);
-            }
-        } else {
-            // Parent process
-            wait(NULL);
-        }
+        free(args);
     }
 
     printf("Exiting shell.\n");
