@@ -4,13 +4,14 @@
 #include <unistd.h>
 #include "parser.h"
 #include "executor.h"
+#include "builtins.h"
 
 #define MAX_INPUT 1024
 
 void display_prompt() {
     char cwd[1024];
     if (getcwd(cwd, sizeof(cwd)) != NULL) {
-        printf("\nmyshell:%s$ ", cwd);
+        printf("myshell:%s$ ", cwd);
     } else {
         perror("getcwd");
         printf("myshell$ ");
@@ -36,13 +37,13 @@ int main() {
 
         input[strcspn(input, "\n")] = 0; // Remove trailing newline
 
-        // Check for exit command
-        if (strcmp(input, "exit") == 0) {
-            break;
-        }
-
         args = parse_input(input);
-        execute_command(args);
+
+        // Check for built-in commands first
+        if (!handle_builtin_command(args)) {
+            // If not a built-in, execute as external command
+            execute_command(args);
+        }
 
         free(args);
     }
