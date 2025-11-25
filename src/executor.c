@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "redirect.h"
 
 void execute_command(char** args) {
     // Handle empty command
@@ -16,6 +17,7 @@ void execute_command(char** args) {
         perror("fork");
     } else if (pid == 0) {
         // Child process
+        handle_redirection(args); // Check for and apply I/O redirection
         if (execvp(args[0], args) == -1) {
             perror(args[0]);
             exit(EXIT_FAILURE);

@@ -4,3 +4,4 @@ myshell
 *.txt
 *.py
 *.cpp
+.vscode

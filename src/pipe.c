@@ -1,6 +1,7 @@
 #include "pipe.h"
 #include "parser.h"
 #include "builtins.h"
+#include "redirect.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -62,6 +63,8 @@ void handle_pipe(char* input) {
             
             char** args = parse_input(commands[i]);
             
+            handle_redirection(args); // Handle redirection for this part of the pipe
+
             // Note: Built-ins in a pipe won't work with this structure
             // because they don't use execvp. This is an advanced feature.
             if (args[0] != NULL) {
