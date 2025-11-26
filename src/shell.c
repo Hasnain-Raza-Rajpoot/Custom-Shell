@@ -58,15 +58,15 @@ int main() {
             HIST_ENTRY* entry = NULL;
 
             if (line_to_process[1] == '!') { // Handle !!
-                if (history_length > 0) entry = history_get(history_length - 1);
+                entry = history_get(history_base + history_length - 1);
             } else { // Handle !n and !-n
                 char* endptr;
                 long n = strtol(line_to_process + 1, &endptr, 10);
                 if (*endptr == '\0') { // Check if it was a valid number
                     if (n > 0) { // !n
-                        entry = history_get(n - history_base);
+                        entry = history_get(n);
                     } else if (n < 0) { // !-n
-                        entry = history_get(history_length + n);
+                        entry = history_get(history_base + history_length + n);
                     }
                 }
             }
