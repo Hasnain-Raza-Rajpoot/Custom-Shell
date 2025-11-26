@@ -3,17 +3,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include "jobs.h" // For job control built-ins
+#include "jobs.h"     // For job control built-ins
+#include "history.h"  // For history built-in
 
 // Forward declarations for built-in functions
 void builtin_cd(char** args);
 void builtin_pwd(char** args);
 void builtin_help(char** args);
 void builtin_exit(char** args);
-// New built-in declarations
 void builtin_jobs(char** args);
 void builtin_fg(char** args);
 void builtin_bg(char** args);
+// New built-in declaration
+void builtin_history(char** args);
 
 // Array of built-in command names
 const char* builtin_names[] = {
@@ -21,9 +23,10 @@ const char* builtin_names[] = {
     "pwd",
     "help",
     "exit",
-    "jobs", // New built-in
-    "fg",   // New built-in
-    "bg"    // New built-in
+    "jobs",
+    "fg",
+    "bg",
+    "history" // New built-in
 };
 
 // Array of corresponding built-in functions
@@ -34,7 +37,8 @@ void (*builtin_funcs[]) (char**) = {
     &builtin_exit,
     &builtin_jobs,
     &builtin_fg,
-    &builtin_bg
+    &builtin_bg,
+    &builtin_history // New built-in
 };
 
 int num_builtins() {
