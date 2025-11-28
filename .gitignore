@@ -5,3 +5,4 @@ myshell
 *.py
 *.cpp
 .vscode
+*.sh

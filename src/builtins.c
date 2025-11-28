@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "jobs.h"     // For job control built-ins
 #include "history.h"  // For history built-in
+#include "alias.h"    // For alias built-ins
 
 // Forward declarations for built-in functions
 void builtin_cd(char** args);
@@ -14,8 +15,10 @@ void builtin_exit(char** args);
 void builtin_jobs(char** args);
 void builtin_fg(char** args);
 void builtin_bg(char** args);
-// New built-in declaration
 void builtin_history(char** args);
+// New built-in declarations
+void builtin_alias(char** args);
+void builtin_unalias(char** args);
 
 // Array of built-in command names
 const char* builtin_names[] = {
@@ -26,7 +29,9 @@ const char* builtin_names[] = {
     "jobs",
     "fg",
     "bg",
-    "history" // New built-in
+    "history", // New built-in
+    "alias",   // New built-in
+    "unalias"  // New built-in
 };
 
 // Array of corresponding built-in functions
@@ -38,7 +43,9 @@ void (*builtin_funcs[]) (char**) = {
     &builtin_jobs,
     &builtin_fg,
     &builtin_bg,
-    &builtin_history // New built-in
+    &builtin_history, // New built-in
+    &builtin_alias,
+    &builtin_unalias
 };
 
 int num_builtins() {
